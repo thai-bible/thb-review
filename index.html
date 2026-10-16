@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>ตรวจทาน THB</title>
+<style>
+:root { --bg: #fbfaf7; --fg: #1d1c1a; --muted: #6b6760; --line: #e4e0d8; --accent: #8a5a00;
+  --warn-bg: #fff4d6; --warn-fg: #6b4a00; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #171614; --fg: #ece9e3;
+  --muted: #a39e95; --line: #34312c; --accent: #e0a84a; --warn-bg: #3a2f14; --warn-fg: #f3d58e; } }
+:root[data-theme="dark"] { --bg: #171614; --fg: #ece9e3; --muted: #a39e95; --line: #34312c;
+  --accent: #e0a84a; --warn-bg: #3a2f14; --warn-fg: #f3d58e; }
+body { margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.7 "Sarabun", "Noto Sans Thai", "Leelawadee UI", system-ui, sans-serif; }
+.warn { background: var(--warn-bg); color: var(--warn-fg); padding: 8px 16px; font-size: .9rem; }
+main { max-width: 860px; margin: 0 auto; padding: 16px; }
+h1 { font-size: 1.4rem; margin: 8px 0; }
+p, .meta { color: var(--muted); }
+a { color: var(--accent); }
+.table { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 480px; }
+th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<div class="warn">ร่างคำแปลเพื่อการตรวจทาน ยังไม่ใช่ฉบับเผยแพร่ · คำแปล THB เผยแพร่เป็น public domain (CC0) แปลจาก World English Bible ซึ่งเป็น public domain · พบจุดที่ควรแก้ กด “เสนอแก้” ที่ข้อนั้น</div>
+<main>
+<h1>ตรวจทานคำแปล THB</h1>
+<p>THB คือพระคัมภีร์ภาษาไทยที่แปลจาก World English Bible (WEB) แต่ละหน้าแสดงต้นฉบับ WEB คู่กับร่างคำแปลทีละข้อ
+ถ้าพบจุดที่ควรแก้ ให้กด “เสนอแก้” ที่ข้อนั้น ระบบจะเปิด GitHub Issue ที่กรอกรหัสข้อ ต้นฉบับ และคำแปลปัจจุบันไว้ให้ (ต้องมีบัญชี GitHub)
+ดูความเห็นทั้งหมดได้ที่ <a href="https://github.com/thai-bible/thb-review/issues">Issues</a></p>
+<div class="table"><table>
+<thead><tr><th>เล่ม</th><th>รหัส</th><th class="num">ยังไม่แปล</th><th class="num">AI ร่าง</th><th class="num">ตรวจแล้ว</th><th class="num">อนุมัติ</th></tr></thead>
+<tbody><tr><td><a href="JON.html">โยนาห์</a></td><td>JON</td><td class="num">0</td><td class="num">48</td><td class="num">0</td><td class="num">0</td></tr></tbody>
+</table></div>
+<p class="meta">ต้นฉบับ eng-web@2026-10-13+usfx.cc094b82 · สร้างจาก thb a89024c เมื่อ 2026-10-16 06:03 UTC</p>
+</main>
+</body>
+</html>

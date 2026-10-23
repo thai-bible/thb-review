@@ -74,6 +74,8 @@ button.play { font: inherit; font-size: .7rem; line-height: 1; width: 1.6rem; he
   cursor: pointer; vertical-align: middle; }
 button.play:disabled { color: var(--muted); cursor: default; opacity: .5; }
 .row.playing { background: var(--head); }
+.controls label.volume { display: inline-flex; align-items: center; gap: 6px; cursor: default; }
+.volume input { width: 7rem; accent-color: var(--accent); }
 .row.playing button.play.on { background: var(--accent); color: var(--card); border-color: var(--accent); }
 body.hide-web .web { display: none; }
 body.hide-thb .thb { display: none; }
@@ -167,6 +169,25 @@ body.hide-c9 .c9 { display: none; }
       row.scrollIntoView({ block: "center", behavior: "smooth" });
     player.src = audio[col] + "/" + p[1] + "/" + p[2] + ".mp3";
     player.play().catch(function () {});
+  }
+  var VOL = "thb-review-volume";
+  if (Object.keys(audio).length) {
+    player.volume = .5;
+    // iOS ignores volume (it stays 1); the device buttons control it there.
+    if (player.volume !== 1) {
+      try { player.volume = Math.min(1, Math.max(0, parseFloat(localStorage.getItem(VOL) || "1"))); }
+      catch (e) { player.volume = 1; }
+      var vol = document.createElement("label");
+      vol.className = "volume";
+      vol.innerHTML = 'ระดับเสียง <input type="range" min="0" max="1" step="0.05" aria-label="ระดับเสียง">';
+      var range = vol.querySelector("input");
+      range.value = player.volume;
+      range.addEventListener("input", function () {
+        player.volume = parseFloat(range.value);
+        try { localStorage.setItem(VOL, range.value); } catch (e) {}
+      });
+      document.querySelector(".controls").appendChild(vol);
+    } else player.volume = 1;
   }
   player.addEventListener("playing", function () { misses = 0; });
   player.addEventListener("ended", function () { if (cur) play(cur.col, cur.i + 1); });

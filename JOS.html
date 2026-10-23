@@ -69,6 +69,12 @@ ol.notes { list-style: none; margin: 4px 0 0; padding: 4px 0 0; border-top: 1px 
   font-size: .8rem; color: var(--muted); }
 ol.notes b { color: var(--accent); margin-right: 4px; }
 i { color: var(--muted); }
+button.play { font: inherit; font-size: .7rem; line-height: 1; width: 1.6rem; height: 1.6rem; margin-right: 6px;
+  border: 1px solid var(--line); border-radius: 50%; background: var(--card); color: var(--accent);
+  cursor: pointer; vertical-align: middle; }
+button.play:disabled { color: var(--muted); cursor: default; opacity: .5; }
+.row.playing { background: var(--head); }
+.row.playing button.play.on { background: var(--accent); color: var(--card); border-color: var(--accent); }
 body.hide-web .web { display: none; }
 body.hide-thb .thb { display: none; }
 body.hide-c0 .c0 { display: none; }
@@ -89,7 +95,7 @@ body.hide-c9 .c9 { display: none; }
 }
 </style>
 </head>
-<body style="--cols: 2">
+<body style="--cols: 2" data-audio='{&quot;web&quot;: &quot;https://pub-244f786a5bd04829a7dcc1a64156d919.r2.dev/bible/audio/WEB/Joshua&quot;}'>
 <div class="warn">ร่างคำแปลเพื่อการตรวจทาน ยังไม่ใช่ฉบับเผยแพร่ · คำแปล THB เผยแพร่เป็น public domain (CC0) แปลจาก World English Bible ซึ่งเป็น public domain · พบจุดที่ควรแก้ กด “เสนอแก้” ที่ข้อนั้น</div>
 <header>
   <nav class="crumbs"><a href="index.html">← ทุกเล่ม</a>
@@ -139,6 +145,49 @@ body.hide-c9 .c9 { display: none; }
     if (document.getElementById(id)) location.hash = id;
   });
   apply();
+  var audio = JSON.parse(document.body.dataset.audio || "{}");
+  var verses = Array.prototype.filter.call(document.querySelectorAll(".row[id]"), function (r) {
+    return /^[^.]+\.\d+\.\d+$/.test(r.id);
+  });
+  var player = new Audio(), cur = null, misses = 0;
+  function stop() {
+    player.pause();
+    if (cur) { cur.row.classList.remove("playing"); cur.btn.classList.remove("on"); cur.btn.textContent = "▶"; }
+    cur = null;
+  }
+  function play(col, i) {
+    stop();
+    var row = verses[i], btn = row && row.querySelector(".cell." + col + " button.play");
+    if (!btn) return;
+    var p = row.id.split(".");
+    cur = { col: col, i: i, row: row, btn: btn };
+    row.classList.add("playing"); btn.classList.add("on"); btn.textContent = "■";
+    var r = row.getBoundingClientRect();
+    if (r.top < (parseInt(document.body.style.getPropertyValue("--hh")) || 0) || r.bottom > innerHeight)
+      row.scrollIntoView({ block: "center", behavior: "smooth" });
+    player.src = audio[col] + "/" + p[1] + "/" + p[2] + ".mp3";
+    player.play().catch(function () {});
+  }
+  player.addEventListener("playing", function () { misses = 0; });
+  player.addEventListener("ended", function () { if (cur) play(cur.col, cur.i + 1); });
+  player.addEventListener("error", function () {
+    if (!cur) return;
+    cur.btn.disabled = true; cur.btn.title = "ยังไม่มีไฟล์เสียงข้อนี้";
+    if (++misses < 3) play(cur.col, cur.i + 1); else { misses = 0; stop(); }
+  });
+  Object.keys(audio).forEach(function (col) {
+    verses.forEach(function (row, i) {
+      var cell = row.querySelector(".cell." + col);
+      if (!cell) return;
+      var btn = document.createElement("button");
+      btn.className = "play"; btn.type = "button"; btn.textContent = "▶";
+      btn.title = "ฟังตั้งแต่ข้อนี้ (กดอีกครั้งเพื่อหยุด)";
+      btn.addEventListener("click", function () {
+        if (cur && cur.btn === btn) stop(); else { misses = 0; play(col, i); }
+      });
+      cell.insertBefore(btn, cell.firstChild);
+    });
+  });
 })();
 </script>
 </body>
